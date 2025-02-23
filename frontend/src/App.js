@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import InvoiceForm from "./components/InvoiceForm";
+import InvoiceTable from "./components/InvoiceTable";
 import "./App.css";
 
 function App() {
@@ -12,7 +14,7 @@ function App() {
     object: "",
     protocolText: "Днес ....................... Подписаните, представители на Възложителя-.............................................. и Александър Караманов - представител на Изпълнителя,след проверка на място установихме,че към ....................... са извършени и подлежат на заплащане въз основа на този протокол,следните натурални видове строително и монтажни работи",
     clientSignature: "",
-    executorSignature: "Александър Караманов" 
+    executorSignature: "Александър Караманов"
   });
 
   const [products, setProducts] = useState([]);
@@ -32,11 +34,7 @@ function App() {
 
   const addProduct = () => {
     if (Object.values(newProduct).some((val) => !val)) return;
-
-    setProducts((prev) => [
-      ...prev,
-      { ...newProduct, quantity: Number(newProduct.quantity), price: Number(newProduct.price) },
-    ]);
+    setProducts((prev) => [...prev, { ...newProduct, quantity: Number(newProduct.quantity), price: Number(newProduct.price) }]);
     setNewProduct({ name: "", unit: "", quantity: "", price: "" });
   };
 
@@ -64,38 +62,10 @@ function App() {
     }
   };
 
-  const totalAmount = products.reduce((sum, p) => sum + p.quantity * p.price, 0);
-  const vatAmount = totalAmount * 0.2;
-  const grandTotal = totalAmount + vatAmount;
-
   return (
     <div className="container">
       <h1>Фактуриране</h1>
-
-      <div className="input-group">
-        <input type="text" name="contractor" placeholder="Възложител" value={clientInfo.contractor} onChange={handleClientChange} />
-        <input type="text" name="executor" placeholder="Изпълнител" value={clientInfo.executor} onChange={handleClientChange} />
-        <input type="text" name="object" placeholder="Обект" value={clientInfo.object} onChange={handleClientChange} />
-      </div>
-
-      <div className="input-group">
-        <input 
-          type="text" 
-          name="clientSignature" 
-          placeholder="За Възложителя" 
-          value={clientInfo.clientSignature} 
-          onChange={handleClientChange} 
-        />
-        <input 
-          type="text" 
-          name="executorSignature" 
-          placeholder="За Изпълнителя" 
-          value={clientInfo.executorSignature} 
-          onChange={handleClientChange} 
-        />
-      </div>
-
-      <textarea name="protocolText" placeholder="Текст на протокола" value={clientInfo.protocolText} onChange={handleClientChange} rows={4}></textarea>
+      <InvoiceForm clientInfo={clientInfo} handleClientChange={handleClientChange} />
 
       <div className="input-group">
         <input type="text" name="name" placeholder="Наименование" value={newProduct.name} onChange={handleProductChange} />
@@ -105,41 +75,9 @@ function App() {
         <button className="btn" onClick={addProduct}>Добави</button>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>№</th>
-            <th>Наименование</th>
-            <th>Мярка</th>
-            <th>Количество</th>
-            <th>Ед. цена без ДДС</th>
-            <th>Обща цена без ДДС</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{product.name}</td>
-              <td>{product.unit}</td>
-              <td>{product.quantity}</td>
-              <td>{product.price.toFixed(2)}</td>
-              <td>{(product.quantity * product.price).toFixed(2)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <InvoiceTable products={products} />
 
-      <div className="summary">
-        <p><strong>Обща стойност СМР без ДДС:</strong> {totalAmount.toFixed(2)} лв.</p>
-        <p><strong>ДДС 20%:</strong> {vatAmount.toFixed(2)} лв.</p>
-        <p className="total"><strong>Общо за фактуриране с ДДС:</strong> {grandTotal.toFixed(2)} лв.</p>
-      </div>
-
-      <div className="btn-group">
-        <button className="btn" onClick={handleExportPDF}>Експорт в PDF</button>
-      </div>
-
+      <button className="btn" onClick={handleExportPDF}>Експорт в PDF</button>
       {message && <p className={`message ${messageType}`}>{message}</p>}
     </div>
   );

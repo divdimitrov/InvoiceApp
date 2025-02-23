@@ -1,0 +1,139 @@
+/* Общи стилове */
+body {
+  font-family: "Arial", sans-serif;
+  font-size: 16px;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Контейнер */
+.container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Заглавие */
+h1 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Група за входни полета */
+.input-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+/* Текстови полета и textarea */
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+textarea {
+  resize: none;
+  height: 100px;
+}
+
+/* Таблица */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: center;
+  font-size: 16px;
+}
+
+th {
+  background: #f4f4f4;
+  font-weight: bold;
+}
+
+/* Обобщение */
+.summary {
+  margin-top: 20px;
+  padding: 10px;
+  border-top: 2px solid black;
+  font-size: 18px;
+}
+
+/* Обща стойност */
+.total {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+/* Бутонна група */
+.btn-group {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 12px 20px;
+  margin: 10px;
+  border: none;
+  border-radius: 5px;
+  background: blue;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: darkblue;
+}
+
+/* Подобрения за бутоните */
+button {
+  font-size: 16px;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Подпис */
+.signature {
+  margin-top: 30px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.signature div {
+  display: inline-block;
+  width: 45%;
+}
+
+.signature p {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.signature-line {
+  margin-top: 15px;
+  text-decoration: underline;
+}

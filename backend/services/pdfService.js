@@ -41,13 +41,14 @@ async function generatePDF(clientInfo, products) {
     </style>
   </head>
   <body>
-    <h1>${clientInfo.protocolTitle}</h1>
-    <h2>${clientInfo.protocolNumber}</h2>
-    <h3>${clientInfo.completionText}</h3>
-    <p><strong>Възложител:</strong> ${clientInfo.contractor}</p>
-    <p><strong>Изпълнител:</strong> ${clientInfo.executor}</p>
-    <p><strong>Обект:</strong> ${clientInfo.object}</p>
-    <p>${clientInfo.protocolText}</p>
+    <h1>${clientInfo.protocolTitle || ""}</h1>
+    <h2>${clientInfo.protocolNumber || ""}</h2>
+    <h3>${clientInfo.completionText || ""}</h3>
+    <p><strong>Възложител:</strong> ${clientInfo.contractor || ""}</p>
+    <p><strong>Изпълнител:</strong> ${clientInfo.executor || ""}</p>
+    <p><strong>Обект:</strong> ${clientInfo.object || ""}</p>
+    <p>${clientInfo.protocolText || ""}</p>
+
 
     <table>
       <tr>

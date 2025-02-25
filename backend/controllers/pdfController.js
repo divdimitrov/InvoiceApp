@@ -2,10 +2,11 @@ const { generatePDF } = require("../services/pdfService");
 
 async function exportPDF(req, res) {
   try {
+
     const { clientInfo, products } = req.body;
 
     if (!clientInfo || !products) {
-      throw new Error("Липсват clientInfo или products в заявката");
+      throw new Error("❌ Липсват clientInfo или products в заявката");
     }
 
     const pdfBuffer = await generatePDF(clientInfo, products);

@@ -4,7 +4,7 @@ import InvoiceForm from "./components/InvoiceForm";
 import InvoiceTable from "./components/InvoiceTable";
 import "./App.css";
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API_URL = process.env.REACT_APP_API_URL || "";
 
 function App() {
   const [clientInfo, setClientInfo] = useState({
@@ -78,16 +78,39 @@ function App() {
         { responseType: "blob" }
       );
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "invoice.pdf");
-      document.body.appendChild(link);
-      link.click();
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
 
-      // Cleanup
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      // iOS Safari doesn't support programmatic download via <a> click.
+      // Use navigator.share or window.open as fallback on mobile.
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [new File([blob], "invoice.pdf", { type: "application/pdf" })] })) {
+        // Use Web Share API if available (modern mobile browsers)
+        try {
+          await navigator.share({
+            files: [new File([blob], "invoice.pdf", { type: "application/pdf" })],
+            title: "Invoice PDF",
+          });
+        } catch (shareErr) {
+          // User cancelled share — open in new tab instead
+          window.open(url, "_blank");
+        }
+      } else if (isMobile) {
+        // Fallback: open PDF in a new tab (user can save from there)
+        window.open(url, "_blank");
+      } else {
+        // Desktop: download via <a> click
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "invoice.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+
+      // Cleanup after a short delay to ensure download/open completes
+      setTimeout(() => window.URL.revokeObjectURL(url), 5000);
 
       showMessage("PDF файлът беше успешно изтеглен!", "success");
     } catch (error) {

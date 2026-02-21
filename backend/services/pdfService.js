@@ -274,6 +274,7 @@ async function generatePDF(clientInfo, products) {
   try {
     browser = await puppeteer.launch({
       headless: "new",
+      executablePath: puppeteer.executablePath(),
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",

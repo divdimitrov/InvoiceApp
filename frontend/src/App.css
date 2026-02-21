@@ -1,122 +1,399 @@
-/* Общи стилове */
+/* ===== MOBILE-FIRST BASE STYLES ===== */
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: "Arial", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   background-color: #f8f9fa;
   margin: 0;
   padding: 0;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* Контейнер */
+/* Контейнер — full-width on mobile, centered card on desktop */
 .container {
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 20px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px;
   background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  min-height: 100vh;
 }
 
 /* Заглавие */
 h1 {
   text-align: center;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
+  margin: 12px 0 20px;
 }
 
-/* Група за входни полета */
+.section-title {
+  font-size: 17px;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* ===== FORM LAYOUT ===== */
+
+/* On mobile: stack inputs vertically */
 .input-group {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 15px;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 12px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 4px;
+}
+
+/* Labeled input wrapper */
+.input-with-label {
+  display: flex;
+  flex-direction: column;
+  margin: 5px 0;
+  flex: 1;
+}
+
+.input-with-label label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+  margin-left: 2px;
+}
+
+/* Read-only preview box (non-interactive) */
+.preview-box {
+  background-color: #f5f5f5;
+  color: #444;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 14px 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
+/* Read-only input field */
+.readonly-input {
+  background-color: #f5f5f5;
+  color: #555;
+  cursor: default;
+  border: 1px solid #ddd;
 }
 
 /* Текстови полета и textarea */
 input, textarea {
   width: 100%;
-  padding: 12px;
+  padding: 14px 12px;
   margin: 5px 0;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 16px; /* >= 16px prevents iOS zoom on focus */
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
 }
 
 textarea {
-  resize: none;
-  height: 100px;
+  resize: vertical;
+  min-height: 100px;
 }
 
-/* Таблица */
+/* ===== TABLE — card layout on mobile ===== */
+
+.table-wrapper {
+  margin-top: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide default table on mobile, show cards instead */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  display: none;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 12px;
+  padding: 10px 8px;
   text-align: center;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 th {
   background: #f4f4f4;
   font-weight: bold;
+  white-space: nowrap;
+}
+
+tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Mobile card view for products */
+.product-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.product-card {
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 14px;
+  position: relative;
+}
+
+.product-card-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 15px;
+}
+
+.product-card-row .label {
+  color: #666;
+  font-weight: 500;
+}
+
+.product-card-row .value {
+  font-weight: 600;
+  text-align: right;
+}
+
+.product-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.product-card-header .product-name {
+  font-weight: 700;
+  font-size: 16px;
+  color: #333;
+}
+
+.product-card-header .product-number {
+  color: #999;
+  font-size: 13px;
+}
+
+/* Празна таблица */
+.empty-table {
+  text-align: center;
+  color: #888;
+  padding: 24px 16px;
+  font-style: italic;
 }
 
 /* Обобщение */
 .summary {
   margin-top: 20px;
-  padding: 10px;
-  border-top: 2px solid black;
-  font-size: 18px;
+  padding: 12px 0;
+  border-top: 2px solid #333;
+  font-size: 16px;
+}
+
+.summary p {
+  margin: 6px 0;
 }
 
 /* Обща стойност */
 .total {
   font-weight: bold;
-  font-size: 20px;
+  font-size: 18px;
+  margin-top: 8px;
 }
 
-/* Бутонна група */
+/* ===== BUTTONS ===== */
+
 .btn-group {
   text-align: center;
   margin-top: 20px;
 }
 
 .btn {
-  padding: 12px 20px;
-  margin: 10px;
+  display: inline-block;
+  padding: 14px 20px;
+  margin: 8px 4px;
   border: none;
-  border-radius: 5px;
-  background: blue;
+  border-radius: 8px;
+  background: #007bff;
   color: white;
   font-size: 16px;
   cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.btn:hover {
-  background: darkblue;
+.btn:hover:not(:disabled) {
+  background: #0056b3;
 }
 
-/* Подобрения за бутоните */
-button {
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  background: #a0c4ff;
+  cursor: not-allowed;
+}
+
+.btn-add {
+  width: 100%;
+  margin-top: 4px;
+  padding: 14px;
   font-size: 16px;
-  padding: 12px 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
+  font-weight: 600;
+}
+
+.btn-export {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+/* Бутон за премахване */
+.btn-remove {
+  background: #dc3545;
   color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
   cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
 }
 
-button:hover {
-  background-color: #0056b3;
+.btn-remove:hover {
+  background: #b02a37;
 }
 
-/* Подпис */
+/* Съобщения */
+.message {
+  text-align: center;
+  padding: 12px 16px;
+  margin-top: 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== TABLET BREAKPOINT (≥ 600px) ===== */
+@media (min-width: 600px) {
+  .container {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 24px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    min-height: auto;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  .input-group {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .form-row {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .btn-add {
+    width: auto;
+    white-space: nowrap;
+    padding: 14px 20px;
+  }
+
+  .btn-export {
+    width: auto;
+    padding: 14px 30px;
+  }
+
+  /* Show table, hide cards on tablet+ */
+  table {
+    display: table;
+  }
+
+  .product-cards {
+    display: none !important;
+  }
+
+  .summary {
+    font-size: 18px;
+  }
+
+  .total {
+    font-size: 20px;
+  }
+}
+
+/* ===== DESKTOP BREAKPOINT (≥ 960px) ===== */
+@media (min-width: 960px) {
+  .container {
+    max-width: 960px;
+    margin: 30px auto;
+    padding: 30px;
+  }
+
+  th, td {
+    padding: 12px;
+    font-size: 16px;
+  }
+}
+
+/* ===== SIGNATURE (PDF only, not shown in web app) ===== */
 .signature {
   margin-top: 30px;
   text-align: center;

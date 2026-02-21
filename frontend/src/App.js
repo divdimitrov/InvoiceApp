@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import InvoiceForm from "./components/InvoiceForm";
 import InvoiceTable from "./components/InvoiceTable";
 import "./App.css";
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 function App() {
   const [clientInfo, setClientInfo] = useState({
@@ -10,9 +12,10 @@ function App() {
     protocolNumber: "Протокол №2",
     completionText: "за установяване завършването и за изплащането на натурални видове СМР",
     contractor: "",
-    executor: "",
+    executor: "Александър Строй ЕООД",
     object: "",
-    protocolText: "Днес ....................... Подписаните, представители на Възложителя-.............................................. и Александър Караманов - представител на Изпълнителя,след проверка на място установихме,че към ....................... са извършени и подлежат на заплащане въз основа на този протокол,следните натурални видове строително и монтажни работи",
+    protocolDate: "",
+    completionDate: "",
     clientSignature: "",
     executorSignature: "Александър Караманов"
   });
@@ -20,7 +23,17 @@ function App() {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ name: "", unit: "", quantity: "", price: "" });
   const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState(""); // success | error
+  const [messageType, setMessageType] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const showMessage = useCallback((text, type) => {
+    setMessage(text);
+    setMessageType(type);
+    setTimeout(() => {
+      setMessage("");
+      setMessageType("");
+    }, 4000);
+  }, []);
 
   const handleClientChange = (e) => {
     const { name, value } = e.target;
@@ -33,15 +46,34 @@ function App() {
   };
 
   const addProduct = () => {
-    if (Object.values(newProduct).some((val) => !val)) return;
-    setProducts((prev) => [...prev, { ...newProduct, quantity: Number(newProduct.quantity), price: Number(newProduct.price) }]);
+    if (Object.values(newProduct).some((val) => !val.toString().trim())) {
+      showMessage("Моля, попълнете всички полета за продукта.", "error");
+      return;
+    }
+    const quantity = Number(newProduct.quantity);
+    const price = Number(newProduct.price);
+    if (isNaN(quantity) || quantity <= 0 || isNaN(price) || price < 0) {
+      showMessage("Количество трябва да е положително число, а цената – неотрицателно число.", "error");
+      return;
+    }
+    setProducts((prev) => [...prev, { name: newProduct.name.trim(), unit: newProduct.unit.trim(), quantity, price }]);
     setNewProduct({ name: "", unit: "", quantity: "", price: "" });
   };
 
+  const removeProduct = (index) => {
+    setProducts((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const handleExportPDF = async () => {
+    if (products.length === 0) {
+      showMessage("Няма добавени продукти за експорт.", "error");
+      return;
+    }
+
+    setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/export/pdf",
+        `${API_URL}/export/pdf`,
         { clientInfo, products },
         { responseType: "blob" }
       );
@@ -53,12 +85,16 @@ function App() {
       document.body.appendChild(link);
       link.click();
 
-      setMessage("PDF файлът беше успешно изтеглен!");
-      setMessageType("success");
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      showMessage("PDF файлът беше успешно изтеглен!", "success");
     } catch (error) {
       console.error("Грешка при експортиране:", error);
-      setMessage("Възникна грешка при експортирането!");
-      setMessageType("error");
+      showMessage("Възникна грешка при експортирането!", "error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,17 +103,25 @@ function App() {
       <h1>Фактуриране</h1>
       <InvoiceForm clientInfo={clientInfo} handleClientChange={handleClientChange} />
 
-      <div className="input-group">
+      <h2 className="section-title">Добавяне на продукт</h2>
+      <div className="form-row">
         <input type="text" name="name" placeholder="Наименование" value={newProduct.name} onChange={handleProductChange} />
         <input type="text" name="unit" placeholder="Мярка" value={newProduct.unit} onChange={handleProductChange} />
-        <input type="number" name="quantity" placeholder="Количество" value={newProduct.quantity} onChange={handleProductChange} />
-        <input type="number" name="price" placeholder="Единична цена без ДДС" value={newProduct.price} onChange={handleProductChange} />
-        <button className="btn" onClick={addProduct}>Добави</button>
+      </div>
+      <div className="form-row">
+        <input type="number" name="quantity" placeholder="Количество" value={newProduct.quantity} onChange={handleProductChange} min="0" step="any" inputMode="decimal" />
+        <input type="number" name="price" placeholder="Единична цена без ДДС" value={newProduct.price} onChange={handleProductChange} min="0" step="0.01" inputMode="decimal" />
+      </div>
+      <button className="btn btn-add" onClick={addProduct}>Добави продукт</button>
+
+      <InvoiceTable products={products} onRemove={removeProduct} />
+
+      <div className="btn-group">
+        <button className="btn btn-export" onClick={handleExportPDF} disabled={isLoading}>
+          {isLoading ? "Генериране..." : "Експорт в PDF"}
+        </button>
       </div>
 
-      <InvoiceTable products={products} />
-
-      <button className="btn" onClick={handleExportPDF}>Експорт в PDF</button>
       {message && <p className={`message ${messageType}`}>{message}</p>}
     </div>
   );

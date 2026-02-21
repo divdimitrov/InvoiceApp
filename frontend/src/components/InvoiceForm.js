@@ -14,7 +14,13 @@ function buildProtocolText(clientInfo) {
 }
 
 function InvoiceForm({ clientInfo, handleClientChange }) {
-  const protocolText = useMemo(() => buildProtocolText(clientInfo), [clientInfo]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const protocolText = useMemo(() => buildProtocolText(clientInfo), [
+    clientInfo.protocolDate,
+    clientInfo.clientSignature,
+    clientInfo.executorSignature,
+    clientInfo.completionDate,
+  ]);
 
   return (
     <div>

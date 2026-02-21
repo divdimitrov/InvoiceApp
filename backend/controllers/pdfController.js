@@ -29,7 +29,7 @@ async function exportPDF(req, res) {
     res.send(Buffer.from(pdfBuffer, "binary"));
   } catch (error) {
     console.error("❌ Грешка при генериране на PDF:", error);
-    res.status(500).json({ error: "Грешка при генериране на PDF" });
+    res.status(500).json({ error: "Грешка при генериране на PDF", detail: error.message });
   }
 }
 

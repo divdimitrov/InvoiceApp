@@ -1,4 +1,5 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
+const chromium = require("@sparticuz/chromium");
 const fs = require("fs");
 const path = require("path");
 
@@ -273,15 +274,9 @@ async function generatePDF(clientInfo, products) {
   let browser;
   try {
     browser = await puppeteer.launch({
-      headless: "new",
-      executablePath: puppeteer.executablePath(),
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--single-process",
-      ],
+      headless: chromium.headless,
+      executablePath: await chromium.executablePath(),
+      args: chromium.args,
     });
     const page = await browser.newPage();
     await page.setContent(htmlContent, { waitUntil: "domcontentloaded" });

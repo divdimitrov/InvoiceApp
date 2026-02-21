@@ -14,12 +14,7 @@ function buildProtocolText(clientInfo) {
 }
 
 function InvoiceForm({ clientInfo, handleClientChange }) {
-  const protocolText = useMemo(() => buildProtocolText(clientInfo), [
-    clientInfo.protocolDate,
-    clientInfo.clientSignature,
-    clientInfo.executorSignature,
-    clientInfo.completionDate,
-  ]);
+  const protocolText = useMemo(() => buildProtocolText(clientInfo), [clientInfo]);
 
   return (
     <div>

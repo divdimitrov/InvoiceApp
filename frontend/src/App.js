@@ -51,6 +51,7 @@ function App() {
   }, []);
 
   // Rebuild protocol text when relevant fields change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (documentType === "protocol") {
       setProtocolText(buildProtocolText(clientInfo));

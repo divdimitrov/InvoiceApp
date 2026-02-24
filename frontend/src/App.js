@@ -51,12 +51,12 @@ function App() {
   }, []);
 
   // Rebuild protocol text when relevant fields change
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const { protocolDate, completionDate, clientSignature, executorSignature } = clientInfo;
   useEffect(() => {
     if (documentType === "protocol") {
-      setProtocolText(buildProtocolText(clientInfo));
+      setProtocolText(buildProtocolText({ protocolDate, completionDate, clientSignature, executorSignature }));
     }
-  }, [documentType, clientInfo.protocolDate, clientInfo.completionDate, clientInfo.clientSignature, clientInfo.executorSignature]);
+  }, [documentType, protocolDate, completionDate, clientSignature, executorSignature]);
 
   const handleClientChange = (e) => {
     const { name, value } = e.target;

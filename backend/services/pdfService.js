@@ -1,10 +1,18 @@
-let puppeteer;
+const puppeteerCore = require("puppeteer-core");
 let chromium;
 try {
-  puppeteer = require("puppeteer");
-} catch {
-  puppeteer = require("puppeteer-core");
   chromium = require("@sparticuz/chromium");
+} catch {
+  // @sparticuz/chromium not available — local dev environment
+}
+
+let puppeteerFull;
+if (!chromium) {
+  try {
+    puppeteerFull = require("puppeteer");
+  } catch {
+    // puppeteer not available either
+  }
 }
 const fs = require("fs");
 const path = require("path");
@@ -273,17 +281,19 @@ async function generatePDF(clientInfo, products) {
   let browser;
   try {
     if (chromium) {
-      // AWS Lambda environment
-      browser = await puppeteer.launch({
+      // Production: use puppeteer-core + @sparticuz/chromium
+      browser = await puppeteerCore.launch({
         headless: chromium.headless,
         executablePath: await chromium.executablePath(),
         args: chromium.args,
       });
-    } else {
-      // Local development
-      browser = await puppeteer.launch({
+    } else if (puppeteerFull) {
+      // Local development: use full puppeteer with bundled Chromium
+      browser = await puppeteerFull.launch({
         headless: "new",
       });
+    } else {
+      throw new Error("No Chromium browser available. Install puppeteer for local dev or @sparticuz/chromium for production.");
     }
     const page = await browser.newPage();
     await page.setContent(htmlContent, { waitUntil: "domcontentloaded" });

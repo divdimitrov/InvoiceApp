@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import InvoiceForm from "./components/InvoiceForm";
 import InvoiceTable from "./components/InvoiceTable";
@@ -6,12 +6,23 @@ import "./App.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "";
 
-const DEFAULT_PROTOCOL_TEXT = "Днес ....................... Подписаните, представители на Възложителя - ............................................... и Александър Караманов - представител на Изпълнителя, след проверка на място установихме, че към ....................... са извършени и подлежат на заплащане въз основа на този протокол, следните натурални видове строително и монтажни работи";
+function buildProtocolText(clientInfo) {
+  const date = clientInfo.protocolDate
+    ? new Date(clientInfo.protocolDate).toLocaleDateString("bg-BG")
+    : ".......................";
+  const contractor = clientInfo.clientSignature || "...............................................";
+  const executor = clientInfo.executorSignature || "Александър Караманов";
+  const completionDate = clientInfo.completionDate
+    ? new Date(clientInfo.completionDate).toLocaleDateString("bg-BG")
+    : ".......................";
+
+  return `Днес ${date} Подписаните, представители на Възложителя - ${contractor} и ${executor} - представител на Изпълнителя, след проверка на място установихме, че към ${completionDate} са извършени и подлежат на заплащане въз основа на този протокол, следните натурални видове строително и монтажни работи`;
+}
 
 function App() {
   const [documentType, setDocumentType] = useState("protocol");
   const [documentNumber, setDocumentNumber] = useState("");
-  const [protocolText, setProtocolText] = useState(DEFAULT_PROTOCOL_TEXT);
+  const [protocolText, setProtocolText] = useState("");
 
   const [clientInfo, setClientInfo] = useState({
     completionText: "за установяване завършването и за изплащането на натурални видове СМР",
@@ -39,6 +50,13 @@ function App() {
     }, 4000);
   }, []);
 
+  // Rebuild protocol text when relevant fields change
+  useEffect(() => {
+    if (documentType === "protocol") {
+      setProtocolText(buildProtocolText(clientInfo));
+    }
+  }, [documentType, clientInfo.protocolDate, clientInfo.completionDate, clientInfo.clientSignature, clientInfo.executorSignature]);
+
   const handleClientChange = (e) => {
     const { name, value } = e.target;
     setClientInfo((prev) => ({ ...prev, [name]: value }));
@@ -49,8 +67,6 @@ function App() {
     setDocumentType(newType);
     if (newType === "offer") {
       setProtocolText("");
-    } else if (newType === "protocol" && !protocolText) {
-      setProtocolText(DEFAULT_PROTOCOL_TEXT);
     }
   };
 

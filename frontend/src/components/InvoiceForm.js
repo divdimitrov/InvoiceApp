@@ -27,13 +27,15 @@ function InvoiceForm({ clientInfo, handleClientChange, documentType, documentNum
 
       <div className="form-row">
         <div className="input-with-label">
-          <label htmlFor="protocolDate">Дата на протокола</label>
+          <label htmlFor="protocolDate">{documentType === "protocol" ? "Дата на протокола" : "Дата на офертата"}</label>
           <input type="date" id="protocolDate" name="protocolDate" value={clientInfo.protocolDate} onChange={handleClientChange} />
         </div>
-        <div className="input-with-label">
-          <label htmlFor="completionDate">Дата на завършване</label>
-          <input type="date" id="completionDate" name="completionDate" value={clientInfo.completionDate} onChange={handleClientChange} />
-        </div>
+        {documentType === "protocol" && (
+          <div className="input-with-label">
+            <label htmlFor="completionDate">Дата на завършване</label>
+            <input type="date" id="completionDate" name="completionDate" value={clientInfo.completionDate} onChange={handleClientChange} />
+          </div>
+        )}
       </div>
 
       <div className="form-row">

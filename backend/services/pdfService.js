@@ -220,6 +220,7 @@ async function generatePDF(clientInfo, products) {
       <h1>${escapeHtml(clientInfo.protocolTitle)}</h1>
       ${clientInfo.protocolNumber ? `<h2>${escapeHtml(clientInfo.protocolNumber)}</h2>` : ""}
       ${clientInfo.completionText ? `<h3>${escapeHtml(clientInfo.completionText)}</h3>` : ""}
+      ${clientInfo.documentType === "offer" && clientInfo.protocolDate ? `<p style="font-size: 12px; margin-top: 5px;">Дата: ${escapeHtml(new Date(clientInfo.protocolDate).toLocaleDateString("bg-BG"))}</p>` : ""}
     </div>
 
     ${protocolText ? `

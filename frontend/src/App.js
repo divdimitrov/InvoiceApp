@@ -6,10 +6,14 @@ import "./App.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "";
 
+const DEFAULT_PROTOCOL_TEXT = "Днес ....................... Подписаните, представители на Възложителя - ............................................... и Александър Караманов - представител на Изпълнителя, след проверка на място установихме, че към ....................... са извършени и подлежат на заплащане въз основа на този протокол, следните натурални видове строително и монтажни работи";
+
 function App() {
+  const [documentType, setDocumentType] = useState("protocol");
+  const [documentNumber, setDocumentNumber] = useState("");
+  const [protocolText, setProtocolText] = useState(DEFAULT_PROTOCOL_TEXT);
+
   const [clientInfo, setClientInfo] = useState({
-    protocolTitle: "Приемо-предавателен протокол Акт обр.19",
-    protocolNumber: "Протокол №2",
     completionText: "за установяване завършването и за изплащането на натурални видове СМР",
     contractor: "",
     executor: "Александър Строй ЕООД",
@@ -38,6 +42,24 @@ function App() {
   const handleClientChange = (e) => {
     const { name, value } = e.target;
     setClientInfo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDocumentTypeChange = (e) => {
+    const newType = e.target.value;
+    setDocumentType(newType);
+    if (newType === "offer") {
+      setProtocolText("");
+    } else if (newType === "protocol" && !protocolText) {
+      setProtocolText(DEFAULT_PROTOCOL_TEXT);
+    }
+  };
+
+  const handleDocumentNumberChange = (e) => {
+    setDocumentNumber(e.target.value);
+  };
+
+  const handleProtocolTextChange = (e) => {
+    setProtocolText(e.target.value);
   };
 
   const handleProductChange = (e) => {
@@ -72,9 +94,23 @@ function App() {
 
     setIsLoading(true);
     try {
+      const exportClientInfo = {
+        ...clientInfo,
+        documentType,
+        documentNumber,
+        protocolText: documentType === "protocol" ? protocolText : "",
+        protocolTitle: documentType === "protocol"
+          ? "Приемо-предавателен протокол Акт обр.19"
+          : "Оферта",
+        protocolNumber: documentNumber
+          ? (documentType === "protocol" ? `Протокол № ${documentNumber}` : `Оферта № ${documentNumber}`)
+          : "",
+        completionText: documentType === "protocol" ? clientInfo.completionText : "",
+      };
+
       const response = await axios.post(
         `${API_URL}/export/pdf`,
-        { clientInfo, products },
+        { clientInfo: exportClientInfo, products },
         { responseType: "blob" }
       );
 
@@ -124,7 +160,16 @@ function App() {
   return (
     <div className="container">
       <h1>Фактуриране</h1>
-      <InvoiceForm clientInfo={clientInfo} handleClientChange={handleClientChange} />
+      <InvoiceForm
+        clientInfo={clientInfo}
+        handleClientChange={handleClientChange}
+        documentType={documentType}
+        documentNumber={documentNumber}
+        protocolText={protocolText}
+        onDocumentTypeChange={handleDocumentTypeChange}
+        onDocumentNumberChange={handleDocumentNumberChange}
+        onProtocolTextChange={handleProtocolTextChange}
+      />
 
       <h2 className="section-title">Добавяне на продукт</h2>
       <div className="form-row">

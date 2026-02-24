@@ -1,5 +1,11 @@
-const puppeteer = require("puppeteer-core");
-const chromium = require("@sparticuz/chromium");
+let puppeteer;
+let chromium;
+try {
+  puppeteer = require("puppeteer");
+} catch {
+  puppeteer = require("puppeteer-core");
+  chromium = require("@sparticuz/chromium");
+}
 const fs = require("fs");
 const path = require("path");
 
@@ -31,17 +37,8 @@ async function generatePDF(clientInfo, products) {
     console.warn("Logo not found, PDF will be generated without it.");
   }
 
-  // Build protocol text from structured fields
-  const protocolDate = clientInfo.protocolDate
-    ? new Date(clientInfo.protocolDate).toLocaleDateString("bg-BG")
-    : ".......................";
-  const contractorName = clientInfo.clientSignature || "...............................................";
-  const executorName = clientInfo.executorSignature || "Александър Караманов";
-  const completionDate = clientInfo.completionDate
-    ? new Date(clientInfo.completionDate).toLocaleDateString("bg-BG")
-    : ".......................";
-
-  const protocolText = `Днес ${protocolDate} Подписаните, представители на Възложителя - ${contractorName} и ${executorName} - представител на Изпълнителя, след проверка на място установихме, че към ${completionDate} са извършени и подлежат на заплащане въз основа на този протокол, следните натурални видове строително и монтажни работи`;
+  // Protocol text is now sent directly from the frontend
+  const protocolText = clientInfo.protocolText || "";
 
   const productRows = products.map((p, i) => {
     const qty = Number(p.quantity);
@@ -213,14 +210,16 @@ async function generatePDF(clientInfo, products) {
     <!-- Centered title block -->
     <div class="title-block">
       <h1>${escapeHtml(clientInfo.protocolTitle)}</h1>
-      <h2>${escapeHtml(clientInfo.protocolNumber)}</h2>
-      <h3>${escapeHtml(clientInfo.completionText)}</h3>
+      ${clientInfo.protocolNumber ? `<h2>${escapeHtml(clientInfo.protocolNumber)}</h2>` : ""}
+      ${clientInfo.completionText ? `<h3>${escapeHtml(clientInfo.completionText)}</h3>` : ""}
     </div>
 
+    ${protocolText ? `
     <!-- Protocol text (italic, centered) -->
     <div class="protocol-text">
       ${escapeHtml(protocolText)}
     </div>
+    ` : ""}
 
     <!-- Products table -->
     <table>
@@ -273,11 +272,19 @@ async function generatePDF(clientInfo, products) {
 
   let browser;
   try {
-    browser = await puppeteer.launch({
-      headless: chromium.headless,
-      executablePath: await chromium.executablePath(),
-      args: chromium.args,
-    });
+    if (chromium) {
+      // AWS Lambda environment
+      browser = await puppeteer.launch({
+        headless: chromium.headless,
+        executablePath: await chromium.executablePath(),
+        args: chromium.args,
+      });
+    } else {
+      // Local development
+      browser = await puppeteer.launch({
+        headless: "new",
+      });
+    }
     const page = await browser.newPage();
     await page.setContent(htmlContent, { waitUntil: "domcontentloaded" });
     const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });

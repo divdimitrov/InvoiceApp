@@ -1,29 +1,21 @@
-import React, { useMemo } from "react";
+import React from "react";
 
-function buildProtocolText(clientInfo) {
-  const date = clientInfo.protocolDate
-    ? new Date(clientInfo.protocolDate).toLocaleDateString("bg-BG")
-    : ".......................";
-  const contractor = clientInfo.clientSignature || "...............................................";
-  const executor = clientInfo.executorSignature || "Александър Караманов";
-  const completionDate = clientInfo.completionDate
-    ? new Date(clientInfo.completionDate).toLocaleDateString("bg-BG")
-    : ".......................";
-
-  return `Днес ${date} Подписаните, представители на Възложителя - ${contractor} и ${executor} - представител на Изпълнителя, след проверка на място установихме, че към ${completionDate} са извършени и подлежат на заплащане въз основа на този протокол, следните натурални видове строително и монтажни работи`;
-}
-
-function InvoiceForm({ clientInfo, handleClientChange }) {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const protocolText = useMemo(() => buildProtocolText(clientInfo), [
-    clientInfo.protocolDate,
-    clientInfo.clientSignature,
-    clientInfo.executorSignature,
-    clientInfo.completionDate,
-  ]);
-
+function InvoiceForm({ clientInfo, handleClientChange, documentType, documentNumber, protocolText, onDocumentTypeChange, onDocumentNumberChange, onProtocolTextChange }) {
   return (
     <div>
+      <div className="form-row">
+        <div className="input-with-label">
+          <label htmlFor="documentType">Тип документ</label>
+          <select id="documentType" name="documentType" value={documentType} onChange={onDocumentTypeChange}>
+            <option value="protocol">Протокол</option>
+            <option value="offer">Оферта</option>
+          </select>
+        </div>
+        <div className="input-with-label">
+          <label htmlFor="documentNumber">Номер на документа</label>
+          <input type="text" id="documentNumber" name="documentNumber" placeholder="Напр. 1.2.3.4" value={documentNumber} onChange={onDocumentNumberChange} />
+        </div>
+      </div>
       <div className="form-row">
         <input type="text" name="contractor" placeholder="Възложител" value={clientInfo.contractor} onChange={handleClientChange} />
         <input type="text" name="executor" value={clientInfo.executor} readOnly className="readonly-input" />
@@ -49,10 +41,12 @@ function InvoiceForm({ clientInfo, handleClientChange }) {
         <input type="text" name="executorSignature" placeholder="За Изпълнителя" value={clientInfo.executorSignature} onChange={handleClientChange} />
       </div>
 
-      <div className="input-with-label">
-        <label>Преглед на текста в протокола</label>
-        <div className="preview-box">{protocolText}</div>
-      </div>
+      {documentType === "protocol" && (
+        <div className="input-with-label">
+          <label htmlFor="protocolText">Текст на протокола</label>
+          <textarea id="protocolText" name="protocolText" value={protocolText} onChange={onProtocolTextChange} rows={4} />
+        </div>
+      )}
     </div>
   );
 }

@@ -19,7 +19,9 @@ app.get("/health", (_req, res) => res.json({ status: "ok" }));
 // Global error handler
 app.use((err, _req, res, _next) => {
   console.error("Unhandled error:", err);
-  res.status(500).json({ error: "Internal server error" });
+
+  const safeMessage = err && err.expose ? err.message : null;
+  res.status(500).json({ error: safeMessage || "Internal server error" });
 });
 
 const PORT = process.env.PORT || 5000;

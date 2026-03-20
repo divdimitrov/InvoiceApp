@@ -35,7 +35,7 @@ function InvoiceTable({ products, onRemove }) {
                 <td>{product.price.toFixed(2)} €</td>
                 <td>{(product.quantity * product.price).toFixed(2)} €</td>
                 <td>
-                  <button className="btn-remove" onClick={() => onRemove(index)} title="Изтрий">
+                  <button className="btn-remove-icon" onClick={() => onRemove(index)} title="Изтрий">
                     ✕
                   </button>
                 </td>
@@ -54,7 +54,7 @@ function InvoiceTable({ products, onRemove }) {
                 <span className="product-number">#{index + 1}</span>{" "}
                 <span className="product-name">{product.name}</span>
               </div>
-              <button className="btn-remove" onClick={() => onRemove(index)} title="Изтрий">
+              <button className="btn-remove-icon" onClick={() => onRemove(index)} title="Изтрий">
                 ✕
               </button>
             </div>

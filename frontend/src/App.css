@@ -7,7 +7,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
-  background-color: #f8f9fa;
+  background-color: var(--app-bg, #f3f6fb);
   margin: 0;
   padding: 0;
   -webkit-text-size-adjust: 100%;
@@ -18,8 +18,8 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 16px;
-  background: white;
-  min-height: 100vh;
+  background: transparent;
+  min-height: auto;
 }
 
 /* Заглавие */
@@ -109,10 +109,16 @@ input, textarea, select {
   background-color: #fff;
 }
 
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-secondary, #64748b);
+  opacity: 0.75;
+}
+
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+  border-color: var(--accent, #2563eb);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
 select {
@@ -141,6 +147,10 @@ table {
   width: 100%;
   border-collapse: collapse;
   display: none;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(248, 250, 255, 0.7);
 }
 
 th, td {
@@ -253,7 +263,6 @@ tr:hover {
   margin: 8px 4px;
   border: none;
   border-radius: 8px;
-  background: #007bff;
   color: white;
   font-size: 16px;
   cursor: pointer;
@@ -261,16 +270,8 @@ tr:hover {
   -webkit-tap-highlight-color: transparent;
 }
 
-.btn:hover:not(:disabled) {
-  background: #0056b3;
-}
-
-.btn:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
 .btn:disabled {
-  background: #a0c4ff;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -287,23 +288,6 @@ tr:hover {
   padding: 16px 24px;
   font-size: 17px;
   font-weight: 600;
-}
-
-/* Бутон за премахване */
-.btn-remove {
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.btn-remove:hover {
-  background: #b02a37;
 }
 
 /* Съобщения */
@@ -422,4 +406,352 @@ tr:hover {
 .signature-line {
   margin-top: 15px;
   text-decoration: underline;
+}
+
+/* ===== MODERN UI LAYER ===== */
+
+:root {
+  --app-bg: #f3f6fb;
+  --surface: #ffffff;
+  --surface-soft: #f8faff;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border: #dbe5f1;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --success: #16a34a;
+  --success-hover: #15803d;
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at -10% -20%, rgba(37, 99, 235, 0.12), transparent 60%),
+    radial-gradient(900px 450px at 120% 0%, rgba(14, 165, 233, 0.1), transparent 55%),
+    var(--app-bg);
+  color: var(--text-primary);
+}
+
+.container {
+  max-width: 980px;
+  margin: 18px auto;
+  border-radius: 18px;
+  background: transparent;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  color: var(--text-primary);
+  letter-spacing: 0.2px;
+}
+
+.page-header p {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.97rem;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow:
+    0 1px 0 rgba(15, 23, 42, 0.04),
+    0 18px 48px rgba(15, 23, 42, 0.08);
+}
+
+.panel .section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  margin: 0 0 10px;
+}
+
+.section-title {
+  margin-top: 2px;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.input-with-label label {
+  color: var(--text-secondary);
+}
+
+input,
+textarea,
+select,
+.readonly-input {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.readonly-input {
+  background-color: var(--surface-soft);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+
+.btn:focus-visible,
+.btn-remove:focus-visible,
+.btn-remove-icon:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.55);
+  outline-offset: 2px;
+}
+
+.btn {
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(37, 99, 235, 1) 0%, rgba(29, 78, 216, 1) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 10px 26px rgba(37, 99, 235, 0.24);
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.03);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-remove {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  padding: 12px 18px;
+  font-size: 15px;
+  min-width: 190px;
+}
+
+.btn-remove:hover {
+  background: var(--danger);
+  color: white;
+  border-color: var(--danger);
+}
+
+/* Outline success button (same look/behavior as .btn-remove but green) */
+.btn-success {
+  background: transparent;
+  color: var(--success);
+  border: 1px solid rgba(22, 163, 74, 0.28);
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  padding: 12px 18px;
+  font-size: 15px;
+  min-width: 190px;
+}
+
+/* Small icon-style remove button (e.g. product row "✕") */
+.btn-remove-icon {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid rgba(220, 38, 38, 0.22);
+  border-radius: 10px;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  line-height: 1;
+  padding: 6px 10px;
+  min-width: auto;
+}
+
+.btn-remove-icon:hover {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.35);
+}
+
+.btn-success:hover {
+  background: var(--success);
+  color: white;
+  border-color: var(--success);
+}
+
+.table-wrapper {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+th {
+  background: var(--surface-soft);
+  color: var(--text-primary);
+  font-size: 13px;
+  letter-spacing: 0.25px;
+  text-transform: uppercase;
+}
+
+th,
+td {
+  border-color: var(--border);
+}
+
+.product-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+.summary {
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(248, 250, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+.summary p {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-primary);
+}
+
+.total {
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+}
+
+.message {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+/* ===== SAVED DOCUMENTS ===== */
+
+.saved-documents {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.saved-document {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.saved-document-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 12px;
+  background: var(--surface-soft);
+}
+
+.saved-document-title {
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.saved-document-meta {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.saved-versions {
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.saved-version {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: var(--surface);
+}
+
+.saved-version-label {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.saved-version-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.saved-version-meta {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.saved-version-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.saved-version-actions .btn {
+  padding: 10px 14px;
+  margin: 0;
+  font-size: 14px;
+}
+
+@media (min-width: 600px) {
+  .container {
+    margin: 26px auto;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .btn-group {
+    margin-top: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }

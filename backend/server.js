@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const pdfRoutes = require("./routes/pdfRoutes");
+const documentsRoutes = require("./routes/documentsRoutes");
 
 require("dotenv").config();
 
@@ -10,6 +11,7 @@ app.use(cors());
 app.use(express.json({ limit: "5mb" }));
 
 app.use("/export", pdfRoutes);
+app.use("/api", documentsRoutes);
 
 // Health check endpoint
 app.get("/health", (_req, res) => res.json({ status: "ok" }));

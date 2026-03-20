@@ -1,6 +1,16 @@
 import React from "react";
 
-function InvoiceForm({ clientInfo, handleClientChange, documentType, documentNumber, protocolText, onDocumentTypeChange, onDocumentNumberChange, onProtocolTextChange }) {
+function InvoiceForm({
+  clientInfo,
+  clientName,
+  handleClientChange,
+  documentType,
+  documentNumber,
+  protocolText,
+  onDocumentTypeChange,
+  onDocumentNumberChange,
+  onProtocolTextChange,
+}) {
   return (
     <div>
       <div className="form-row">
@@ -17,8 +27,14 @@ function InvoiceForm({ clientInfo, handleClientChange, documentType, documentNum
         </div>
       </div>
       <div className="form-row">
-        <input type="text" name="contractor" placeholder="Възложител" value={clientInfo.contractor} onChange={handleClientChange} />
-        <input type="text" name="executor" value={clientInfo.executor} readOnly className="readonly-input" />
+        <div className="input-with-label">
+          <label>Възложител</label>
+          <input type="text" value={clientName || ""} readOnly className="readonly-input" placeholder="Избери/създай клиент" />
+        </div>
+        <div className="input-with-label">
+          <label>Изпълнител</label>
+          <input type="text" name="executor" value={clientInfo.executor} readOnly className="readonly-input" />
+        </div>
       </div>
 
       <div className="form-row">

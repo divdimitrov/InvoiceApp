@@ -17,6 +17,25 @@ if (!chromium) {
 const fs = require("fs");
 const path = require("path");
 
+let cachedLogoDataUrl = null;
+let logoLoadAttempted = false;
+
+function getLogoDataUrl() {
+  if (logoLoadAttempted) return cachedLogoDataUrl;
+  logoLoadAttempted = true;
+
+  try {
+    const logoPath = path.join(__dirname, "..", "..", "frontend", "public", "logoAS.png");
+    const logoBuffer = fs.readFileSync(logoPath);
+    cachedLogoDataUrl = `data:image/png;base64,${logoBuffer.toString("base64")}`;
+  } catch {
+    cachedLogoDataUrl = "";
+    console.warn("Logo not found, PDF will be generated without it.");
+  }
+
+  return cachedLogoDataUrl;
+}
+
 /**
  * Escapes HTML special characters to prevent XSS in generated PDF.
  */
@@ -35,15 +54,7 @@ async function generatePDF(clientInfo, products) {
   const vatAmount = totalAmount * 0.2;
   const grandTotal = totalAmount + vatAmount;
 
-  // Read logo as base64
-  let logoBase64 = "";
-  try {
-    const logoPath = path.join(__dirname, "..", "..", "frontend", "public", "logoAS.png");
-    const logoBuffer = fs.readFileSync(logoPath);
-    logoBase64 = `data:image/png;base64,${logoBuffer.toString("base64")}`;
-  } catch (e) {
-    console.warn("Logo not found, PDF will be generated without it.");
-  }
+  const logoBase64 = getLogoDataUrl();
 
   // Protocol text is now sent directly from the frontend
   const protocolText = clientInfo.protocolText || "";
